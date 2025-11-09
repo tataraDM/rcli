@@ -1,12 +1,17 @@
 // TODO rcli csv -i input.csv -o output.json
 use clap::Parser;
-use rcli::{process_csv, Opts, SubCommand};
+use rcli::{Opts, SubCommand, process_csv};
 
 fn main() -> anyhow::Result<()> {
     let opts: Opts = Opts::parse();
     match opts.cmd {
         SubCommand::Csv(opts) => {
-            process_csv(&opts.input, &opts.output)?;
+            let output = if let Some(output) = opts.output {
+                output.clone()
+            } else {
+                format!("output.{}", opts.format)
+            };
+            process_csv(&opts.input, output, opts.format)?;
         }
     }
     Ok(())
