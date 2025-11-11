@@ -2,21 +2,6 @@ use std::{fmt, str::FromStr};
 
 use clap::Parser;
 
-#[derive(Debug, Parser)]
-#[command(name = "rcli",version,author, about,long_about = None)]
-pub struct Opts {
-    #[command(subcommand)]
-    pub cmd: SubCommand,
-}
-
-#[derive(Debug, Parser)]
-pub enum SubCommand {
-    #[command(name = "csv", about = "Show CSV, or convert CSV to onther formats")]
-    Csv(CsvOpts),
-    #[command(name = "genpass", about = "Generate ")]
-    GenPass(GenPassOpts),
-}
-
 #[derive(Debug, Clone, Copy)]
 pub enum OutputFormat {
     Json,
@@ -35,20 +20,6 @@ pub struct CsvOpts {
     pub header: bool,
     #[arg(short, long, default_value_t = ',')]
     pub delimiter: char,
-}
-
-#[derive(Debug, Parser)]
-pub struct GenPassOpts {
-    #[arg(short, long, default_value_t = 12)]
-    pub length: usize,
-    #[arg(long, default_value_t = true)]
-    pub lowercase: bool,
-    #[arg(long, default_value_t = true)]
-    pub uppercase: bool,
-    #[arg(long, default_value_t = true)]
-    pub number: bool,
-    #[arg(long, default_value_t = true)]
-    pub symbol: bool,
 }
 
 fn validate_path_exists(path: &str) -> Result<String, &'static str> {
