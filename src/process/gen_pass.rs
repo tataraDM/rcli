@@ -1,8 +1,8 @@
 use anyhow::Ok;
 
+use rand::Rng;
+use rand::seq::IteratorRandom;
 use rand::seq::SliceRandom;
-use rand::{Rng, seq::IteratorRandom};
-use zxcvbn::zxcvbn;
 
 const SYMBOLS: &str = "!@#$%^&*_";
 const LOWERCASE: &str = "abcdefghijklmnopqrstuvwxyz";
@@ -15,8 +15,8 @@ pub fn process_genpass(
     uppercase: bool,
     number: bool,
     symbol: bool,
-) -> anyhow::Result<()> {
-    let mut rng = rand::rng();
+) -> anyhow::Result<String> {
+    let mut rng = rand::thread_rng();
     let mut password = Vec::new();
     let mut chars = Vec::new();
     if lowercase {
@@ -40,13 +40,11 @@ pub fn process_genpass(
     }
 
     for _ in 0..(length - password.len()) {
-        let idx = rng.random_range(0..chars.len());
+        let idx = rng.gen_range(0..chars.len());
         password.push(chars[idx] as char);
     }
     password.shuffle(&mut rng);
     let password = password.iter().collect::<String>();
-    println!("{}", password);
-    let result = zxcvbn(&password, &[]);
-    println!("Strength: {}", result.score());
-    Ok(())
+
+    Ok(password)
 }

@@ -59,3 +59,7 @@ repos:
       #   language: rust
       #   files: \.rs$
       #   pass_filenames: false
+  - repo: https://github.com/commitizen-tools/commitizen
+    rev: master
+    hooks:
+      - id: commitizen
