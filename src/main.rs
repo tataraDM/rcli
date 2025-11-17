@@ -1,10 +1,13 @@
 use clap::Parser;
-use rcli::TextSubCommand;
 use rcli::{Base64SubCommand, Opts, SubCommand, process_csv, process_genpass};
+use rcli::{HttpSubCommand, TextSubCommand, process_http_serve};
 use rcli::{process_decode, process_encode};
 use rcli::{process_text_generate, process_text_sign, process_text_verify};
 use zxcvbn::zxcvbn;
-fn main() -> anyhow::Result<()> {
+
+#[tokio::main]
+async fn main() -> anyhow::Result<()> {
+    tracing_subscriber::fmt::init();
     let opts: Opts = Opts::parse();
     match opts.cmd {
         SubCommand::Csv(opts) => {
@@ -65,6 +68,11 @@ fn main() -> anyhow::Result<()> {
                         println!("Public key saved to {}", public_key_path.display());
                     }
                 }
+            }
+        },
+        SubCommand::Http(sub) => match sub {
+            HttpSubCommand::Serve(opts) => {
+                process_http_serve(opts.addr, opts.port).await?;
             }
         },
     }
